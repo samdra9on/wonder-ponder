@@ -5,7 +5,7 @@ const port = process.env.PORT || 3000;
 
 module.exports = {
     mode: 'development',
-    entry: './src/index.jsx',
+    entry: './src/index.js',
     output: {
         filename: 'bundle.[hash].js',
         publicPath: '/',
