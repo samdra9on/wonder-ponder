@@ -1,3 +1,4 @@
+const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
@@ -34,10 +35,18 @@ module.exports = {
                     },
                 ],
             },
+            {
+                test: /\.modernizrrc(\.json)?$/,
+                use: ['modernizr-loader', 'json-loader'],
+                type: 'javascript/auto', // disable Webpack 4 native JSON loader
+            },
         ],
     },
     resolve: {
         extensions: ['.js', '.jsx'],
+        alias: {
+            modernizr$: path.resolve(__dirname, '.modernizrrc.json'),
+        },
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),

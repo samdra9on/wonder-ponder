@@ -14,7 +14,12 @@
     "extends": ["airbnb", "prettier", "prettier/react"],
     "plugins": ["prettier"],
     "rules": {
+        "no-console": 0,
         "prettier/prettier": ["error"],
-        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+        "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+        "import/no-extraneous-dependencies": [
+            "error",
+            { "devDependencies": ["webpack.config.js", "src/utils/FeatureDetection.js"] }
+        ]
     }
 }
