@@ -1,4 +1,3 @@
 import React from 'react';
-import Drawings from './temp/Drawings';
 
-export default () => <Drawings />;
+export default () => <div>Hello, WP</div>;
