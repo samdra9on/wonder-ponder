@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-    type: 'web-app',
+    type: 'react-app',
     webpack: {
         extra: {
             module: {
