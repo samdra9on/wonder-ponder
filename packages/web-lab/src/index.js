@@ -1,1 +1,2 @@
-import './canvas/GuessTheLetter';
+// import './canvas/GuessTheLetter';
+import './react/HelloWorld';
