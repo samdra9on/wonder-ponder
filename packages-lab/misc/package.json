@@ -1,7 +1,7 @@
 {
-    "name": "web-lab",
+    "name": "misc",
     "version": "1.0.0",
-    "description": "Describe web-lab here",
+    "description": "Describe misc here",
     "private": true,
     "scripts": {
         "build": "nwb build-react-app",
