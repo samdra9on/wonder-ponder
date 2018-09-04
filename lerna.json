@@ -1,4 +1,4 @@
 {
-    "packages": ["packages/*"],
+    "packages": ["packages/*", "packages-lab/health-tracker/*"],
     "version": "1.0.0"
 }
