@@ -1,1 +1,1 @@
-import './canvas/HelloWorld';
+import './canvas/GuessTheLetter';
