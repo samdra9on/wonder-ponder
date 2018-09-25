@@ -1,54 +1,33 @@
 import React, { Component } from 'react';
-import ApolloClient from 'apollo-boost';
-import gql from 'graphql-tag';
-import { ApolloProvider, Query } from 'react-apollo';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { ImplicitCallback, SecureRoute, Security } from '@okta/okta-react';
+import Home from './Home';
+import Login from './Login';
+import Points from './Points';
 
-const client = new ApolloClient({
-    uri: 'http://localhost:4000/graphql',
-});
+function onAuthRequired({ history }) {
+    history.push('/login');
+}
 
 class App extends Component {
     render() {
         return (
-            <ApolloProvider client={client}>
-                <div className="App">
-                    <header className="App-header">
-                        <img src={logo} className="App-logo" alt="logo" />
-                        <h1 className="App-title">Welcome to React</h1>
-                    </header>
-                    <p className="App-intro">
-                        To get started, edit <code>src/App.js</code> and save to relead.
-                    </p>
-                    <Query
-                        query={gql`
-                            {
-                                points {
-                                    id
-                                    date
-                                    exercise
-                                    diet
-                                    alcohol
-                                    notes
-                                }
-                            }
-                        `}
-                    >
-                        {({ loading, error, data }) => {
-                            if (loading) return <p>Loading...</p>;
-                            if (error) return <p>Error: {error}</p>;
-                            return data.points.map(p => (
-                                <div key={p.id}>
-                                    <p>Date: {p.date}</p>
-                                    <p>Points: {p.exercise + p.diet + p.alcohol}</p>
-                                    <p>Notes: {p.notes}</p>
-                                </div>
-                            ));
-                        }}
-                    </Query>
-                </div>
-            </ApolloProvider>
+            <Router>
+                <Security
+                    issuer="https://dev-203972.oktapreview.com/oauth2/default"
+                    client_id="0oagcceb54Plddle50h7"
+                    redirect_uri={`${window.location.origin}/implicit/callback`}
+                    onAuthRequired={onAuthRequired}
+                >
+                    <Route path="/" exact component={Home} />
+                    <SecureRoute path="/points" component={Points} />
+                    <Route
+                        path="/login"
+                        render={() => <Login baseUrl="https://dev-203972.oktapreview.com" />}
+                    />
+                    <Route path="/implicit/callback" component={ImplicitCallback} />
+                </Security>
+            </Router>
         );
     }
 }
