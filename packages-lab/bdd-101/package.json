@@ -1,0 +1,12 @@
+{
+    "name": "bdd-101",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "cucumber": "cucumber-js"
+    },
+    "dependencies": {
+        "cucumber": ">=0.0.1",
+        "zombie": ">=0.0.1"
+    }
+}
