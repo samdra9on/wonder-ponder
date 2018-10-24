@@ -8,8 +8,8 @@ function isItFriday(today) {
     return 'Nope';
 }
 
-Given('today is Sunday', () => {
-    this.today = 'Sunday';
+Given('today is {string}', givenDay => {
+    this.today = givenDay;
 });
 
 When("I ask whether it's Friday yet", () => {
@@ -18,8 +18,4 @@ When("I ask whether it's Friday yet", () => {
 
 Then('I should be told {string}', expectedAnswer => {
     assert.equal(this.actualAnswer, expectedAnswer);
-});
-
-Given('today is Friday', () => {
-    this.today = 'Friday';
 });
