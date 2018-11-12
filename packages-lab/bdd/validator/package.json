@@ -1,0 +1,17 @@
+{
+    "name": "validator",
+    "version": "0.1.0",
+    "description": "A validation service for Wield LTD.",
+    "main": "index.js",
+    "scripts": {
+        "test": "mocha -u bdd -R spec -t 500 --recursive",
+        "watch": "mocha -u bdd -R spec -t 500 --recursive --watch"
+    },
+    "keywords": [],
+    "author": "Enrique Amodeo",
+    "license": "MIT",
+    "devDependencies": {
+        "chai": "^4.2.0",
+        "mocha": "^5.2.0"
+    }
+}
