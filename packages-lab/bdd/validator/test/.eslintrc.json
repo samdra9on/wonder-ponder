@@ -1,0 +1,9 @@
+{
+    "plugins": ["mocha"],
+    "rules": {
+        "no-unused-expressions": 0,
+        "func-names": [2, "never"],
+        "prefer-arrow-callback": 0,
+        "mocha/prefer-arrow-callback": 2
+    }
+}
