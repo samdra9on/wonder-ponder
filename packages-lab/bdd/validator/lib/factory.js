@@ -3,12 +3,16 @@ const nonPositiveValidationRule = require('./validator/rules/nonPositive');
 const nonDivisibleValidationRule = require('./validator/rules/nonDivisible');
 
 module.exports = function factory(findConfiguration) {
-    findConfiguration('default');
-    return function newValidator() {
-        return validatorWith([
-            nonPositiveValidationRule,
-            nonDivisibleValidationRule(3, 'error.three'),
-            nonDivisibleValidationRule(5, 'error.five'),
-        ]);
+    return function newValidator(configurationName) {
+        const configuration = findConfiguration(configurationName);
+        const rules = configuration.map(({ type, options }) => {
+            if (type === 'nonPositive') {
+                return nonPositiveValidationRule;
+            } else if (type === 'nonDivisible') {
+                return nonDivisibleValidationRule(options.divisor, options.error);
+            }
+            return null;
+        });
+        return validatorWith(rules);
     };
 };

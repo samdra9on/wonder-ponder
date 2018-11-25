@@ -78,5 +78,27 @@ describe('A validation', function() {
             expect(configuration.callCount).to.be.equal(1);
             expect(configuration.args).to.be.deep.equal(['alternative']);
         });
+
+        it('for valid numbers, will return no errors', function() {
+            expect(validator(7)).to.be.empty;
+        });
+
+        context('for not strictly positive numbers:', function() {
+            it('like 0, will include error.nonpositive', function() {
+                expect(validator(0)).to.include('error.nonpositive');
+            });
+            it('like -2, will include error.nonpositive', function() {
+                expect(validator(-2)).to.include('error.nonpositive');
+            });
+        });
+
+        context('for numbers divisible by 11:', function() {
+            it('like 11, will include error.eleven', function() {
+                expect(validator(11)).to.include('error.eleven');
+            });
+            it('like 22, will include error.eleven', function() {
+                expect(validator(22)).to.include('error.eleven');
+            });
+        });
     });
 });
