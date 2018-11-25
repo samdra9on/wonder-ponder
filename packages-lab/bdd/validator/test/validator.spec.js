@@ -1,18 +1,30 @@
 const chai = require('chai');
 const { expect } = chai;
-const validatorWith = require('../lib/validator');
-const nonPositiveValidationRule = require('../lib/validator/rules/nonPositive');
-const nonDivisibleValidationRule = require('../lib/validator/rules/nonDivisible');
+const factoryWithConfiguration = require('../lib/factory');
 
 describe('A validation', function() {
     let validator;
+    let configuration;
+
     context('using the default validation rules:', function() {
         beforeEach(function() {
-            validator = validatorWith([
-                nonPositiveValidationRule,
-                nonDivisibleValidationRule(3, 'error.three'),
-                nonDivisibleValidationRule(5, 'error.five'),
-            ]);
+            configuration = function() {
+                configuration.callCount++;
+                configuration.args = Array.prototype.slice.call(arguments);
+                return [
+                    { type: 'nonPositive' },
+                    { type: 'nonDivisible', options: { divisor: 3, error: 'error.three' } },
+                    { type: 'nonDivisible', options: { divisor: 5, error: 'error.five' } },
+                ];
+            };
+            configuration.callCount = 0;
+            const newValidator = factoryWithConfiguration(configuration);
+            validator = newValidator('default');
+        });
+
+        it('will access the configuration to get the validation rules', function() {
+            expect(configuration.callCount).to.be.equal(1);
+            expect(configuration.args).to.be.deep.equal(['default']);
         });
 
         it('for valid numbers, will return no errors', function() {
@@ -44,6 +56,27 @@ describe('A validation', function() {
             it('like 15, will include error.fove', function() {
                 expect(validator(15)).to.include('error.five');
             });
+        });
+    });
+
+    context('using the alternative validation rules:', function() {
+        beforeEach(function() {
+            configuration = function() {
+                configuration.callCount++;
+                configuration.args = Array.prototype.slice.call(arguments);
+                return [
+                    { type: 'nonPositive' },
+                    { type: 'nonDivisible', options: { divisor: 11, error: 'error.eleven' } },
+                ];
+            };
+            configuration.callCount = 0;
+            var newValidator = factoryWithConfiguration(configuration);
+            validator = newValidator('alternative');
+        });
+
+        it('will access the configuration to get the validation rules', function() {
+            expect(configuration.callCount).to.be.equal(1);
+            expect(configuration.args).to.be.deep.equal(['alternative']);
         });
     });
 });
