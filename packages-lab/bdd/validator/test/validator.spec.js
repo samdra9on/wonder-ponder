@@ -8,9 +8,9 @@ describe('A validation', function() {
 
     context('using the default validation rules:', function() {
         beforeEach(function() {
-            configuration = function() {
-                configuration.callCount++;
-                configuration.args = Array.prototype.slice.call(arguments);
+            configuration = function(...args) {
+                configuration.callCount += 1;
+                configuration.args = args;
                 return [
                     { type: 'nonPositive' },
                     { type: 'nonDivisible', options: { divisor: 3, error: 'error.three' } },
@@ -61,16 +61,16 @@ describe('A validation', function() {
 
     context('using the alternative validation rules:', function() {
         beforeEach(function() {
-            configuration = function() {
-                configuration.callCount++;
-                configuration.args = Array.prototype.slice.call(arguments);
+            configuration = function(...args) {
+                configuration.callCount += 1;
+                configuration.args = args;
                 return [
                     { type: 'nonPositive' },
                     { type: 'nonDivisible', options: { divisor: 11, error: 'error.eleven' } },
                 ];
             };
             configuration.callCount = 0;
-            var newValidator = factoryWithConfiguration(configuration);
+            const newValidator = factoryWithConfiguration(configuration);
             validator = newValidator('alternative');
         });
 
