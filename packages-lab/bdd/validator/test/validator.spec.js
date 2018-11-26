@@ -3,6 +3,7 @@ const sinon = require('sinon');
 const factoryWithConfiguration = require('../lib/factory');
 
 const { expect } = chai;
+chai.use(require('sinon-chai'));
 
 describe('A validation', function() {
     let validator;
@@ -21,8 +22,8 @@ describe('A validation', function() {
         });
 
         it('will access the configuration to get the validation rules', function() {
-            expect(configuration.callCount).to.be.equal(1);
-            expect(configuration.calledWithExactly('default')).to.be.ok;
+            expect(configuration).to.have.been.calledOnce;
+            expect(configuration).to.have.been.calledWithExactly('default');
         });
 
         it('for valid numbers, will return no errors', function() {
@@ -69,8 +70,8 @@ describe('A validation', function() {
         });
 
         it('will access the configuration to get the validation rules', function() {
-            expect(configuration.callCount).to.be.equal(1);
-            expect(configuration.calledWithExactly('alternative')).to.be.ok;
+            expect(configuration).to.have.been.calledOnce;
+            expect(configuration).to.have.been.calledWithExactly('alternative');
         });
 
         it('for valid numbers, will return no errors', function() {
