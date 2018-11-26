@@ -1,6 +1,7 @@
 const chai = require('chai');
-const { expect } = chai;
 const factoryWithConfiguration = require('../lib/factory');
+
+const { expect } = chai;
 
 describe('A validation', function() {
     let validator;
