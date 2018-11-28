@@ -1,13 +1,9 @@
-import h from './hyperscript';
+import Component from './component';
+import h from './my-hyperscript';
+import People from './People';
 
-const App = props => {
-    const { list } = props;
-    return h(
-        'div',
-        { class: 'app' },
-        h('h1', null, 'Simple vDOM'),
-        h('ul', null, ...list.map(item => h('li', null, item))),
-    );
-};
-
-export { App as default };
+export default class App extends Component {
+    render() {
+        return h('div', { class: 'app' }, h('h1', null, 'Simple vDOM'), h(People));
+    }
+}
