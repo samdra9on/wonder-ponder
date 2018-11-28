@@ -1,11 +1,12 @@
 import App from './App';
+import { renderNode } from './renderNode';
 
 const root = document.getElementById('root');
 const getRandomItemFromArray = list => list[Math.round(Math.random() * (list.length - 1))];
 
 let currentApp;
 const render = state => {
-    const newApp = App(state);
+    const newApp = renderNode(App(state));
     if (currentApp) {
         root.replaceChild(newApp, currentApp);
     } else {
