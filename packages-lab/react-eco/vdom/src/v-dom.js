@@ -21,12 +21,20 @@ const renderNode = vnode => {
     return el;
 };
 
-export const renderComponent = (component, parent) => {
-    const oldBase = component.base;
-    component.base = renderNode(component.render(component.props, component.state));
-    if (parent) {
-        parent.appendChild(component.base);
-    } else {
-        oldBase.parentNode.replaceChild(component.base, oldBase);
+export const diff = (dom, vnode, parent) => {
+    if (dom) {
+        if (vnode.children.length !== dom.childNodes.length) {
+            dom.appendChild(renderNode(vnode.children[vnode.children.length - 1]));
+        }
+        dom.childNodes.forEach((child, i) => diff(child, vnode.children[i]));
+        return dom;
     }
+    const newDom = renderNode(vnode);
+    parent.appendChild(newDom);
+    return newDom;
+};
+
+export const renderComponent = component => {
+    const rendered = component.render(component.props, component.state);
+    component.base = diff(component.base, rendered);
 };

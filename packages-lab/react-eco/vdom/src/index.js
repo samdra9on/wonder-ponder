@@ -1,5 +1,9 @@
-import { renderComponent } from './v-dom';
+import h from './my-hyperscript';
+import { diff } from './v-dom';
 import App from './App';
 
-const root = document.querySelector('#root');
-renderComponent(new App(), root);
+const render = (vnode, parent) => {
+    diff(null, vnode, parent);
+};
+
+render(h(App), document.querySelector('#root'));
