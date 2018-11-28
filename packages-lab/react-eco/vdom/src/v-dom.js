@@ -23,8 +23,10 @@ const renderNode = vnode => {
 
 export const diff = (dom, vnode, parent) => {
     if (dom) {
-        if (vnode.children.length !== dom.childNodes.length) {
+        if (vnode.children.length > dom.childNodes.length) {
             dom.appendChild(renderNode(vnode.children[vnode.children.length - 1]));
+        } else if (vnode.children.length < dom.childNodes.length) {
+            dom.removeChild(dom.lastChild);
         }
         dom.childNodes.forEach((child, i) => diff(child, vnode.children[i]));
         return dom;

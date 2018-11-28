@@ -1,4 +1,4 @@
-import Component from './component';
+import Component from './Component';
 import h from './my-hyperscript';
 import People from './People';
 

@@ -7,7 +7,7 @@ export default class Component {
     }
 
     setState(state) {
-        this.state = Object.assign({}, state);
+        this.state = Object.assign({}, this.state, state);
         renderComponent(this);
     }
 }
