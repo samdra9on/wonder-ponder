@@ -13,12 +13,11 @@ describe('Customer displays order', function() {
     });
     context('Given that the order is empty', function() {
         let result;
-        beforeEach(function(done) {
+        beforeEach(function() {
             this.orderId = 'some empty order id';
             this.orderDAO.byId.withArgs(this.orderId).callsArgWithAsync(1, null, []);
-            this.orderSystem.display(this.orderId, (error, order) => {
+            return this.orderSystem.display(this.orderId).then(order => {
                 result = order;
-                done(error);
             });
         });
         it('will show no order items', function() {
