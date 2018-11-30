@@ -20,15 +20,15 @@ describe('Customer displays order', function() {
             this.result = this.orderSystem.display(orderId);
         });
         it('will show no order items', function() {
-            expect(this.result).to.eventually.have.property('items').that.is.empty;
+            return expect(this.result).to.eventually.have.property('items').that.is.empty;
         });
         it('will show 0 as the total price', function() {
-            expect(this.result)
+            return expect(this.result)
                 .to.eventually.have.property('totalPrice')
                 .that.is.equal(0);
         });
         it('will only be possible to add a beverage', function() {
-            expect(this.result)
+            return expect(this.result)
                 .to.eventually.have.property('actions')
                 .that.is.deep.equal([
                     {
