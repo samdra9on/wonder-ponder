@@ -12,35 +12,39 @@ describe('Customer displays order', function() {
         this.orderSystem = orderSystemWith(this.orderDAO);
     });
     context('Given that the order is empty', function() {
-        let result;
+        let orderId;
         beforeEach(function() {
-            this.orderId = 'some empty order id';
-            this.orderDAO.byId.withArgs(this.orderId).callsArgWithAsync(1, null, []);
-            return this.orderSystem.display(this.orderId).then(order => {
-                result = order;
-            });
+            orderId = 'some empty order id';
+            this.orderDAO.byId.withArgs(orderId).callsArgWithAsync(1, null, []);
+            this.result = this.orderSystem.display(orderId);
         });
         it('will show no order items', function() {
-            expect(result).to.have.property('items').that.is.empty;
+            this.result.then(result => {
+                expect(result).to.have.property('items').that.is.empty;
+            });
         });
         it('will show 0 as the total price', function() {
-            expect(result)
-                .to.have.property('totalPrice')
-                .that.is.equal(0);
+            this.result.then(result => {
+                expect(result)
+                    .to.have.property('totalPrice')
+                    .that.is.equal(0);
+            });
         });
         it('will only be possible to add a beverage', function() {
-            expect(result)
-                .to.have.property('actions')
-                .that.is.deep.equal([
-                    {
-                        action: 'append-beverage',
-                        target: this.orderId,
-                        parameters: {
-                            beverageRef: null,
-                            quantity: 0,
+            this.result.then(result => {
+                expect(result)
+                    .to.have.property('actions')
+                    .that.is.deep.equal([
+                        {
+                            action: 'append-beverage',
+                            target: orderId,
+                            parameters: {
+                                beverageRef: null,
+                                quantity: 0,
+                            },
                         },
-                    },
-                ]);
+                    ]);
+            });
         });
     });
 
