@@ -5,6 +5,12 @@ const orderSystemWith = require('../lib/orders');
 const { expect } = chai;
 chai.use(require('chai-as-promised'));
 
+const forPromise = value =>
+    new Promise(resolve => {
+        setTimeout(() => {
+            resolve(value);
+        });
+    });
 describe('Customer displays order', function() {
     beforeEach(function() {
         this.orderDAO = {
@@ -16,7 +22,7 @@ describe('Customer displays order', function() {
         let orderId;
         beforeEach(function() {
             orderId = 'some empty order id';
-            this.orderDAO.byId.withArgs(orderId).returns(Promise.resolve([]));
+            this.orderDAO.byId.withArgs(orderId).returns(forPromise([]));
             this.result = this.orderSystem.display(orderId);
         });
         it('will show no order items', function() {
