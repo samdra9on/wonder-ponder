@@ -1,5 +1,5 @@
 const chai = require('chai');
-const sinon = require('sinon');
+const newStorage = require('./support/storageDouble');
 const orderSystemWith = require('../lib/orders');
 
 const { expect } = chai;
@@ -7,17 +7,13 @@ chai.use(require('chai-as-promised'));
 
 describe('Customer displays order', function() {
     beforeEach(function() {
-        this.orderDAO = {
-            byId: sinon.stub(),
-        };
-        this.orderSystem = orderSystemWith(this.orderDAO);
+        this.newStorage = newStorage();
+        this.orderSystem = orderSystemWith(this.newStorage.dao());
     });
     context('Given that the order is empty', function() {
-        let orderId;
         beforeEach(function() {
-            orderId = 'some empty order id';
-            this.orderDAO.byId.withArgs(orderId).callsArgWithAsync(1, null, []);
-            this.result = this.orderSystem.display(orderId);
+            this.order = this.newStorage.alreadyContains({ id: 'some empty order id', data: [] });
+            this.result = this.orderSystem.display(this.order.id);
         });
         it('will show no order items', function() {
             return expect(this.result).to.eventually.have.property('items').that.is.empty;
@@ -33,7 +29,7 @@ describe('Customer displays order', function() {
                 .that.is.deep.equal([
                     {
                         action: 'append-beverage',
-                        target: orderId,
+                        target: this.order.id,
                         parameters: {
                             beverageRef: null,
                             quantity: 0,
@@ -45,28 +41,33 @@ describe('Customer displays order', function() {
 
     context('Given that the order contains beverages', function() {
         beforeEach(function() {
-            this.orderId = 'some non empty order id';
-            this.expresso = {
-                id: 'expresso id',
-                name: 'Expresso',
-                price: 1.5,
-            };
-            this.mocaccino = {
-                id: 'mocaccino id',
-                name: 'Mocaccino',
-                price: 2.3,
-            };
-            this.orderItems = [
-                { beverage: this.expresso, quantity: 1 },
-                { beverage: this.mocaccino, quantity: 2 },
-            ];
-            this.orderDAO.byId.withArgs(this.orderId).callsArgWithAsync(1, null, this.orderItems);
-            this.result = this.orderSystem.display(this.orderId);
+            this.order = this.newStorage.alreadyContains({
+                id: 'some non empty order id',
+                data: [
+                    {
+                        beverage: {
+                            id: 'expresso id',
+                            name: 'Expresso',
+                            price: 1.5,
+                        },
+                        quantity: 1,
+                    },
+                    {
+                        beverage: {
+                            id: 'mocaccino id',
+                            name: 'Mocaccino',
+                            price: 2.3,
+                        },
+                        quantity: 2,
+                    },
+                ],
+            });
+            this.result = this.orderSystem.display(this.order.id);
         });
         it('will show one item per beverage', function() {
             return expect(this.result)
                 .to.eventually.have.property('items')
-                .that.is.deep.equal(this.orderItems);
+                .that.is.deep.equal(this.order.data);
         });
         it('will show the sum of the unit prices as total price', function() {
             return expect(this.result)
