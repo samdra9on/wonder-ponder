@@ -1,12 +1,13 @@
 const _ = require('lodash');
 
-module.exports = function orderSystemWith(orderDAO) {
+module.exports = function orderSystemWith(orderDAO, messageDao) {
     return {
         display(orderId) {
-            return new Promise((resolve, reject) => {
+            const orderPromise = new Promise((resolve, reject) => {
                 orderDAO.byId(orderId, (error, order) => {
                     if (!Array.isArray(order)) {
                         reject(new Error('The order must be an array.'));
+                        return;
                     }
 
                     if (order.length === 0) {
@@ -93,6 +94,34 @@ module.exports = function orderSystemWith(orderDAO) {
                     }
                 });
             });
+            const messagesPromise = new Promise((resolve, reject) => {
+                messageDao.byId(orderId, (error, messages) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve(messages);
+                });
+            });
+
+            return Promise.all([orderPromise, messagesPromise]).then(
+                ([order, messages]) =>
+                    new Promise((resolve, reject) => {
+                        messageDao.update(
+                            {
+                                id: orderId,
+                                data: [],
+                            },
+                            error => {
+                                if (error) {
+                                    reject(error);
+                                    return;
+                                }
+                                resolve(_.assign(order, { messages }));
+                            },
+                        );
+                    }),
+            );
         },
     };
 };
