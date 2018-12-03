@@ -5,12 +5,6 @@ const orderSystemWith = require('../lib/orders');
 const { expect } = chai;
 chai.use(require('chai-as-promised'));
 
-const forPromise = value =>
-    new Promise(resolve => {
-        setTimeout(() => {
-            resolve(value);
-        });
-    });
 describe('Customer displays order', function() {
     beforeEach(function() {
         this.orderDAO = {
@@ -22,7 +16,7 @@ describe('Customer displays order', function() {
         let orderId;
         beforeEach(function() {
             orderId = 'some empty order id';
-            this.orderDAO.byId.withArgs(orderId).returns(forPromise([]));
+            this.orderDAO.byId.withArgs(orderId).callsArgWithAsync(1, null, []);
             this.result = this.orderSystem.display(orderId);
         });
         it('will show no order items', function() {
@@ -50,8 +44,35 @@ describe('Customer displays order', function() {
     });
 
     context('Given that the order contains beverages', function() {
-        it('will show one item per beverage');
-        it('will show the sum of the unit prices as total price');
+        beforeEach(function() {
+            this.orderId = 'some non empty order id';
+            this.expresso = {
+                id: 'expresso id',
+                name: 'Expresso',
+                price: 1.5,
+            };
+            this.mocaccino = {
+                id: 'mocaccino id',
+                name: 'Mocaccino',
+                price: 2.3,
+            };
+            this.orderItems = [
+                { beverage: this.expresso, quantity: 1 },
+                { beverage: this.mocaccino, quantity: 2 },
+            ];
+            this.orderDAO.byId.withArgs(this.orderId).callsArgWithAsync(1, null, this.orderItems);
+            this.result = this.orderSystem.display(this.orderId);
+        });
+        it('will show one item per beverage', function() {
+            return expect(this.result)
+                .to.eventually.have.property('items')
+                .that.is.deep.equal(this.orderItems);
+        });
+        it('will show the sum of the unit prices as total price', function() {
+            return expect(this.result)
+                .to.eventually.have.property('totalPrice')
+                .that.is.equal(6.1);
+        });
         it('will be possible to place the order');
         it('will be possible to add a beverage');
         it('will be possible to remove a beverage');
