@@ -1,7 +1,7 @@
 module.exports = {
-    expresso() {
+    espresso() {
         return {
-            id: 'expresso id',
+            id: 'espresso id',
             name: 'Expresso',
             price: 1.5,
         };
@@ -11,6 +11,13 @@ module.exports = {
             id: 'mocaccino id',
             name: 'Mocaccino',
             price: 2.3,
+        };
+    },
+    cappuccino() {
+        return {
+            id: 'cappuccino id',
+            name: 'Cappuccino',
+            price: 2,
         };
     },
 };
