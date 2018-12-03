@@ -39,6 +39,56 @@ module.exports = function orderSystemWith(orderDAO) {
                             },
                             { totalPrice: 0 },
                         );
+
+                        result.actions = [
+                            {
+                                action: 'place-order',
+                                target: orderId,
+                            },
+                            {
+                                action: 'append-beverage',
+                                target: orderId,
+                                parameters: {
+                                    beverageRef: null,
+                                    quantity: 0,
+                                },
+                            },
+                        ];
+
+                        const removeActions = _.reduce(
+                            order,
+                            (accu, item) => {
+                                const newAccu = _.concat(accu, {
+                                    action: 'remove-beverage',
+                                    target: orderId,
+                                    parameters: {
+                                        beverageRef: item.beverage.id,
+                                    },
+                                });
+
+                                return newAccu;
+                            },
+                            [],
+                        );
+                        result.actions = _.concat(result.actions, removeActions);
+
+                        const editActions = _.reduce(
+                            order,
+                            (accu, item) => {
+                                const newAccu = _.concat(accu, {
+                                    action: 'edit-beverage',
+                                    target: orderId,
+                                    parameters: {
+                                        beverageRef: item.beverage.id,
+                                        newQuantity: item.quantity,
+                                    },
+                                });
+                                return newAccu;
+                            },
+                            [],
+                        );
+                        result.actions = _.concat(result.actions, editActions);
+
                         resolve(result);
                     }
                 });
