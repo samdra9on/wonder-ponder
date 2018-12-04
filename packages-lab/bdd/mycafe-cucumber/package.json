@@ -4,7 +4,7 @@
     "description": "A sample app for BDD with JS, using cucumber",
     "main": "index.js",
     "scripts": {
-        "test": "cucumber-js --require test/step_definitions/"
+        "test": "cucumber-js --require test/"
     },
     "keywords": [],
     "author": "Enrique Amodeo",

@@ -1,12 +1,9 @@
-const { Given, When, Then, setWorldConstructor } = require('cucumber');
+const { Given, When, Then } = require('cucumber');
 const chai = require('chai');
-const World = require('../support/world');
 const orders = require('../support/examples/orders');
 const { expect } = chai;
 chai.use(require('sinon-chai'));
 chai.use(require('chai-as-promised'));
-
-setWorldConstructor(World);
 
 Given('that the order is empty', function() {
     this.order = this.orderStorage.alreadyContains(orders.empty());
