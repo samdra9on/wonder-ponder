@@ -1,9 +1,8 @@
 {
-    "plugins": ["mocha"],
+    "plugins": ["cucumber"],
     "rules": {
-        "no-unused-expressions": 0,
-        "func-names": [2, "never"],
-        "prefer-arrow-callback": 0,
-        "mocha/prefer-arrow-callback": 2
+        "cucumber/async-then": 2,
+        "cucumber/no-restricted-tags": 2,
+        "no-arrow-functions": 2
     }
 }
