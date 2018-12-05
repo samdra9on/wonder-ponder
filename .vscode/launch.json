@@ -21,6 +21,17 @@
             "args": ["--timeout", "999999", "--colors", "${file}"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Cukes current",
+            "cwd": "${workspaceFolder}/packages-lab/bdd/mycafe-cucumber",
+            "program":
+                "${workspaceFolder}/packages-lab/bdd/mycafe-cucumber/node_modules/.bin/cucumber-js",
+            "args": ["--require", "test/"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen"
         }
     ]
 }
