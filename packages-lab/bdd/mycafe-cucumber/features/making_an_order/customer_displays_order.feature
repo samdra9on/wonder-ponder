@@ -7,11 +7,9 @@ Feature: Customer displays order
     in order to review the contents of my order and its price easily
 
     Scenario: Order is empty
-        Given that the order contains:
-            | beverage | quantity |
+        Given that the order is empty
         When the customer displays the order
-        Then the following order items are shown:
-            | beverage | quantity |
+        Then no order items will be shown
         And "0" will be shown as total price
         And there will be possible to:
             | action      | for item |
