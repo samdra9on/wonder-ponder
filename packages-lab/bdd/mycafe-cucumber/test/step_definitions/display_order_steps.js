@@ -6,13 +6,31 @@ const { expect } = chai;
 chai.use(require('sinon-chai'));
 chai.use(require('chai-as-promised'));
 
-Given('that the order is empty', function() {
-    this.order = this.orderStorage.alreadyContains(orders.empty());
+const theOrderContains = function(orderItemExamples) {
+    this.order = this.orderStorage.alreadyContains(orders.withItems(orderItemExamples));
     this.messages = this.messageStorage.alreadyContains({
         id: this.order.id,
         data: [],
     });
     this.messageStorage.updateWillNotFail();
+};
+
+const theFollowingItemsAreShown = function(orderItemExamples) {
+    return expect(this.result)
+        .to.eventually.have.property('items')
+        .that.is.deep.equal(orders.items(orderItemExamples));
+};
+
+const thereWillBePossibleTo = function(actionExamples) {
+    const expectedActions = orders.actionsForOrderFrom(this.order, actionExamples);
+    return expect(this.result)
+        .to.eventually.have.property('actions')
+        .that.have.length(expectedActions.length)
+        .and.that.deep.include.members(expectedActions);
+};
+
+Given('that the order is empty', function() {
+    theOrderContains.call(this, this.dataTable([]));
 });
 
 When(/^the customer displays the order$/, function() {
@@ -20,7 +38,7 @@ When(/^the customer displays the order$/, function() {
 });
 
 Then(/^no order items will be shown$/, function() {
-    return expect(this.result).to.eventually.have.property('items').that.is.empty;
+    theFollowingItemsAreShown.call(this, this.dataTable([]));
 });
 
 Then(/^"([^"]*)" will be shown as total price$/, function(expectedTotoalPrice) {
@@ -29,25 +47,12 @@ Then(/^"([^"]*)" will be shown as total price$/, function(expectedTotoalPrice) {
         .that.is.equal(Number(expectedTotoalPrice));
 });
 
-Given('that the order contains:', function(orderItemExamples) {
-    this.order = this.orderStorage.alreadyContains(orders.withItems(orderItemExamples));
-    this.messages = this.messageStorage.alreadyContains({
-        id: this.order.id,
-        data: [],
-    });
-    this.messageStorage.updateWillNotFail();
+Then('there will only be possible to add a beverage', function() {
+    thereWillBePossibleTo.call(this, this.dataTable([{ action: 'append item' }]));
 });
 
-Then('the following order items are shown:', function(orderItemExamples) {
-    return expect(this.result)
-        .to.eventually.have.property('items')
-        .that.is.deep.equal(orders.items(orderItemExamples));
-});
+Given('that the order contains:', theOrderContains);
 
-Then('there will be possible to:', function(actionExamples) {
-    const expectedActions = orders.actionsForOrderFrom(this.order, actionExamples);
-    return expect(this.result)
-        .to.eventually.have.property('actions')
-        .that.have.length(expectedActions.length)
-        .and.that.deep.include.members(expectedActions);
-});
+Then('the following order items are shown:', theFollowingItemsAreShown);
+
+Then('there will be possible to:', thereWillBePossibleTo);

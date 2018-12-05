@@ -11,9 +11,7 @@ Feature: Customer displays order
         When the customer displays the order
         Then no order items will be shown
         And "0" will be shown as total price
-        And there will be possible to:
-            | action      | for item |
-            | append item |          |
+        And there will only be possible to add a beverage
 
 
     Scenario: Non empty order
