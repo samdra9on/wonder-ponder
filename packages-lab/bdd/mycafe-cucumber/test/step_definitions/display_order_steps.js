@@ -29,20 +29,8 @@ Then(/^"([^"]*)" will be shown as total price$/, function(expectedTotoalPrice) {
         .that.is.equal(Number(expectedTotoalPrice));
 });
 
-Then(/^there will only be possible to add a beverage$/, function() {
-    return expect(this.result)
-        .to.eventually.have.property('actions')
-        .that.is.deep.equal([orders.actionsFor(this.order).appendItem()]);
-});
-
-Given('that the order contains {string} {string}', function(strQuantity, name) {
-    const quantity = Number(strQuantity);
-    this.orderItems = _.concat(this.orderItems || [], {
-        beverage: _.toLower(name),
-        quantity,
-    });
-    this.order = this.orderStorage.alreadyContains(orders.withItems(this.orderItems));
-
+Given('that the order contains:', function(orderItemExamples) {
+    this.order = this.orderStorage.alreadyContains(orders.withItems(orderItemExamples));
     this.messages = this.messageStorage.alreadyContains({
         id: this.order.id,
         data: [],
@@ -50,46 +38,16 @@ Given('that the order contains {string} {string}', function(strQuantity, name) {
     this.messageStorage.updateWillNotFail();
 });
 
-Then('the order will show {string} {string}', function(strQuantity, name) {
-    const quantity = Number(strQuantity);
+Then('the following order items are shown:', function(orderItemExamples) {
     return expect(this.result)
         .to.eventually.have.property('items')
-        .that.is.deep.include(
-            ...orders.withItems([
-                {
-                    beverage: _.toLower(name),
-                    quantity,
-                },
-            ]).data,
-        );
+        .that.is.deep.equal(orders.items(orderItemExamples));
 });
 
-Then('there will be possible to {string}', function(legibleAction) {
-    if (legibleAction === 'place order') {
-        return expect(this.result)
-            .to.eventually.have.property('actions')
-            .that.is.deep.include(orders.actionsFor(this.order).place());
-    } else if (legibleAction === 'add beverage') {
-        return expect(this.result)
-            .to.eventually.have.property('actions')
-            .that.is.deep.include(orders.actionsFor(this.order).appendItem());
-    }
-});
-
-Then('there will be possible to {string} for item {string}', function(legibleAction, strIndex) {
-    const index = Number(strIndex) - 1;
-    if (legibleAction === 'edit item quantity') {
-        return expect(this.result)
-            .to.eventually.have.property('actions')
-            .that.is.deep.include(orders.actionsFor(this.order).editItemQuantity(index));
-    }
-});
-
-Then('there will be possible to {string} from item {string}', function(legibleAction, strIndex) {
-    const index = Number(strIndex) - 1;
-    if (legibleAction === 'remove item') {
-        return expect(this.result)
-            .to.eventually.have.property('actions')
-            .that.is.deep.include(orders.actionsFor(this.order).removeItem(index));
-    }
+Then('there will be possible to:', function(actionExamples) {
+    const expectedActions = orders.actionsForOrderFrom(this.order, actionExamples);
+    return expect(this.result)
+        .to.eventually.have.property('actions')
+        .that.have.length(expectedActions.length)
+        .and.that.deep.include.members(expectedActions);
 });

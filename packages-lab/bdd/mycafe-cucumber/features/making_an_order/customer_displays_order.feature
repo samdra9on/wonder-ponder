@@ -11,19 +11,27 @@ Feature: Customer displays order
         When the customer displays the order
         Then no order items will be shown
         And "0" will be shown as total price
-        And there will only be possible to add a beverage
+        And there will be possible to:
+            | action      | for item |
+            | append item |          |
 
 
     Scenario: Non empty order
-        Given that the order contains "1" "Espresso"
-        And that the order contains "2" "Mocaccino"
+        Given that the order contains:
+            | beverage  | quantity |
+            | Espresso  | 1        |
+            | Mocaccino | 2        |
         When the customer displays the order
-        Then the order will show "1" "Espresso"
-        And the order will show "2" "Mocaccino"
+        Then the following order items are shown:
+            | beverage  | quantity |
+            | Espresso  | 1        |
+            | Mocaccino | 2        |
         And "6.10" will be shown as total price
-        And there will be possible to "place order"
-        And there will be possible to "add beverage"
-        And there will be possible to "edit item quantity" for item "1"
-        And there will be possible to "remove item" from item "1"
-        And there will be possible to "edit item quantity" for item "2"
-        And there will be possible to "remove item" from item "2"
+        And there will be possible to:
+            | action             | for item |
+            | place order        |          |
+            | append item        |          |
+            | edit item quantity | 1        |
+            | remove item        | 1        |
+            | edit item quantity | 2        |
+            | remove item        | 2        |

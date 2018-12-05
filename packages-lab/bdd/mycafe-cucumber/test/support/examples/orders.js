@@ -5,12 +5,69 @@ let counter = 0;
 
 function asOrderItem(itemExample) {
     return {
-        beverage: beverages[itemExample.beverage](),
-        quantity: itemExample.quantity,
+        beverage: beverages[_.toLower(itemExample.beverage)](),
+        quantity: Number(itemExample.quantity),
+    };
+}
+
+function toCamelCase(actionName) {
+    return actionName
+        .split(/\s+/)
+        .map(function(word, i) {
+            if (i === 0) {
+                return word;
+            } else {
+                return word.charAt(0).toUpperCase() + word.slice(1);
+            }
+        })
+        .join('');
+}
+
+function actionFactoryFor(order) {
+    return {
+        removeItem(index) {
+            return {
+                action: 'remove-beverage',
+                target: order.id,
+                parameters: {
+                    beverageRef: order.data[index].beverage.id,
+                },
+            };
+        },
+        editItemQuantity(index) {
+            const item = order.data[index];
+            return {
+                action: 'edit-beverage',
+                target: order.id,
+                parameters: {
+                    beverageRef: item.beverage.id,
+                    newQuantity: item.quantity,
+                },
+            };
+        },
+        appendItem() {
+            return {
+                action: 'append-beverage',
+                target: order.id,
+                parameters: {
+                    beverageRef: null,
+                    quantity: 0,
+                },
+            };
+        },
+        placeOrder() {
+            return {
+                action: 'place-order',
+                target: order.id,
+            };
+        },
     };
 }
 
 module.exports = {
+    items(itemExamples) {
+        return _.map(itemExamples.hashes(), asOrderItem);
+    },
     empty() {
         return {
             id: '<empty order>',
@@ -21,48 +78,15 @@ module.exports = {
         counter += 1;
         return {
             id: `<non empty order ${counter}>`,
-            data: _.map(itemExamples, asOrderItem),
+            data: this.items(itemExamples),
         };
     },
-    actionsFor(order) {
-        return {
-            removeItem(index) {
-                const item = order.data[index];
-                return {
-                    action: 'remove-beverage',
-                    target: order.id,
-                    parameters: {
-                        beverageRef: item.beverage.id,
-                    },
-                };
-            },
-            editItemQuantity(index) {
-                const item = order.data[index];
-                return {
-                    action: 'edit-beverage',
-                    target: order.id,
-                    parameters: {
-                        beverageRef: item.beverage.id,
-                        newQuantity: item.quantity,
-                    },
-                };
-            },
-            appendItem() {
-                return {
-                    action: 'append-beverage',
-                    target: order.id,
-                    parameters: {
-                        beverageRef: null,
-                        quantity: 0,
-                    },
-                };
-            },
-            place() {
-                return {
-                    action: 'place-order',
-                    target: order.id,
-                };
-            },
-        };
+    actionsForOrderFrom(order, actionExamples) {
+        const actionFactory = actionFactoryFor(order);
+        return _.map(actionExamples.hashes(), actionExample => {
+            const actionName = toCamelCase(actionExample.action);
+            const forItem = actionExample['for item'];
+            return actionFactory[actionName](Number(forItem) - 1);
+        });
     },
 };
