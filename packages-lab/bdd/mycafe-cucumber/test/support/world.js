@@ -1,5 +1,5 @@
 const { setWorldConstructor } = require('cucumber');
-const createDataTable = require('@mattzgg/cucumber-js-cdt');
+const { default: createDataTable } = require('@mattzgg/cucumber-js-cdt');
 const newStorage = require('./storageDouble');
 const orderSystemWith = require('../../lib/orders');
 
